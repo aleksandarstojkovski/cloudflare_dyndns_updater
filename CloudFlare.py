@@ -20,7 +20,11 @@ class CloudFlare:
     }
 
   def get_zones(self) -> dict:
-    zones = json.loads(requests.get(self.api_url,headers=self.headers).text)
+    params = {
+      'page': int(1),
+      'per_page': int(300),
+    }
+    zones = json.loads(requests.get(self.api_url,headers=self.headers,params=params).text)
     return zones['result']
 
   def get_zone_id(self,domain_name) -> dict:
@@ -28,6 +32,7 @@ class CloudFlare:
     for zone in self.get_zones():
       if zone['name'] == domain_name:
         zone_id=zone['id']
+        break
     return zone_id
 
   def get_all_records_by_domain(self,domain_name) -> dict:
@@ -46,15 +51,13 @@ class CloudFlare:
         record_id=record['id']
     return  record_id  
 
-  def update_record(self,domain_name,record_name,record_type,content,ttl=int(1),proxied=bool(False)) -> dict:
+  def update_record(self,domain_name,record_name,record_type,content) -> dict:
     zone_id = self.get_zone_id(domain_name)
     record_id = self.get_record_id(domain_name,record_name,record_type)
     data = {
       'type': record_type,
       'name': record_name,
       'content': content,
-      'ttl': ttl,
-      'proxied': proxied
     }
     url = self.api_url + '/' + zone_id + '/dns_records/' + record_id 
     return_value = json.loads(requests.put(url, headers=self.headers, json=data).text)
@@ -79,11 +82,13 @@ class CloudFlare:
       ip = json_response['ip']
     return ip
 
-  def start_dyndns(self,domain_name,record_name,record_type,ttl=int(1),proxied=bool(False)):
+  def start_dyndns(self,domain_name,record_name,record_type,interval=int(10)):
+    if interval < 5:
+      interval=10
     while(True):
       public_ip = self.get_public_ip()
       record_content = self.get_record_value(domain_name,record_name,record_type)
       if public_ip != record_content:
         self.update_record(domain_name,record_name,record_type,public_ip)
         print("Record updated from: "+record_content+ " to "+public_ip)
-      time.sleep(5)
+      time.sleep(interval)
