@@ -1,7 +1,7 @@
 # Cloudflare DynDns Updater
 
 ## Description
-TODO
+This tool transofrms a traditional DNS record into a DynamicDNS record. Once started, the tool checks if the value of the specified record matches the current external ip of the network. If the ip address does not match the tool will update it.
 
 ## Installation
 
