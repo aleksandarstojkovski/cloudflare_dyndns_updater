@@ -12,7 +12,7 @@ git clone https://github.com/aleksandarstojkovski/cloudflare_dyndns_updater/
 ## Usage
 
 ```
-Usage: python3 main.py -e <EMAIL> -ak <API_KEY> -d <DOMAIN> -r <DNS_RECORD> -rt <RECORD_TYPE> -i INTERVAL 
+Usage: python3 main.py -e <EMAIL> -ak <API_KEY> -d <DOMAIN> -r <DNS_RECORD> -rt <RECORD_TYPE> -i <INTERVAL>
 
       -b backup path, must exist, must be writable by zimbra user
       -r restore path, must exist, must be readable by zimbra user
