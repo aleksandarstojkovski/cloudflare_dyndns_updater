@@ -14,7 +14,7 @@ class CloudFlare:
     self.email=email
     self.apikey=api_key
     self.headers={
-      'X-Auth-Key': api_key,
+      'Authorization': 'Bearer {}'.format(api_key),
       'X-Auth-Email': email,
       'Content-Type': 'application/json'
     }
