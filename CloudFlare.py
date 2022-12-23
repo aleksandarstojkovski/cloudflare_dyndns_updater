@@ -51,13 +51,14 @@ class CloudFlare:
         record_id=record['id']
     return  record_id  
 
-  def update_record(self,domain_name,record_name,record_type,content) -> dict:
+  def update_record(self,domain_name,record_name,record_type,record_content, record_ttl=1) -> dict:
     zone_id = self.get_zone_id(domain_name)
     record_id = self.get_record_id(domain_name,record_name,record_type)
     data = {
       'type': record_type,
       'name': record_name,
-      'content': content,
+      'content': record_content,
+      'ttl': record_ttl
     }
     url = self.api_url + '/' + zone_id + '/dns_records/' + record_id 
     return_value = json.loads(requests.put(url, headers=self.headers, json=data).text)
